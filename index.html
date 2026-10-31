@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<meta name="description" content="ELAWS SHORTS : découvre, partage et crée des vidéos courtes.">
+<title>ELAWS SHORTS</title>
+<style>
+:root {
+  --bg:#ffffff; --text:#181818; --muted:#777;
+  --line:#eeeeee; --accent:#ef3155; --soft:#fff0f3;
+}
+* { box-sizing:border-box; }
+body {
+  margin:0; font-family:Arial,Helvetica,sans-serif;
+  background:#f5f5f5; color:var(--text);
+}
+button,input,textarea { font:inherit; }
+button { cursor:pointer; }
+.app {
+  max-width:540px; min-height:100vh; margin:auto;
+  background:var(--bg); position:relative;
+  padding-bottom:76px;
+}
+header {
+  height:58px; padding:0 15px; display:flex;
+  align-items:center; justify-content:space-between;
+  border-bottom:1px solid var(--line);
+  position:sticky; top:0; background:#fff; z-index:5;
+}
+.logo { font-size:21px; font-weight:900; letter-spacing:-1px; }
+.logo span { color:var(--accent); }
+.icon-btn {
+  border:0; background:transparent; font-size:23px;
+  padding:7px; color:var(--text);
+}
+.page { display:none; }
+.page.active { display:block; }
+.tabs {
+  display:flex; justify-content:center; gap:28px;
+  height:44px; align-items:center; border-bottom:1px solid var(--line);
+}
+.tabs button {
+  background:none; border:0; height:100%; font-weight:700;
+  color:var(--muted); position:relative;
+}
+.tabs button.selected { color:var(--text); }
+.tabs button.selected:after {
+  content:""; position:absolute; height:3px; width:28px;
+  background:var(--accent); bottom:0; left:50%;
+  transform:translateX(-50%); border-radius:5px;
+}
+.feed { padding:12px; }
+.video-card {
+  height:min(66vh,540px); min-height:340px;
+  border-radius:17px; overflow:hidden; position:relative;
+  background:#292929; margin-bottom:17px; color:white;
+}
+.video-card video {
+  width:100%; height:100%; object-fit:cover;
+  display:block; background:#292929;
+}
+.video-card video:focus { outline:none; }
+.video-overlay {
+  position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(transparent 50%,rgba(0,0,0,.78));
+}
+.video-info {
+  position:absolute; bottom:15px; left:14px; right:64px;
+  color:#fff; text-shadow:0 1px 3px #333;
+}
+.video-info strong { font-size:15px; }
+.video-info p { font-size:13px; line-height:1.4; margin:8px 0; }
+.video-actions {
+  position:absolute; right:9px; bottom:18px;
+  display:flex; flex-direction:column; align-items:center; gap:14px;
+}
+.action {
+  border:0; color:#fff; background:rgba(0,0,0,.25);
+  border-radius:50%; width:43px; height:43px;
+  font-size:22px; display:grid; place-items:center;
+}
+.action.liked { color:#ff5070; background:white; }
+.action-count { font-size:11px; text-align:center; margin-top:-10px; }
+.follow-btn {
+  border:0; border-radius:20px; color:#fff;
+  background:var(--accent); padding:6px 10px;
+  font-size:12px; font-weight:bold;
+}
+.empty {
+  padding:35px 18px; text-align:center; color:var(--muted);
+  line-height:1.6;
+}
+nav {
+  position:fixed; bottom:0; left:50%; transform:translateX(-50%);
+  width:100%; max-width:540px; height:68px;
+  display:flex; align-items:center; justify-content:space-around;
+  background:#fff; border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom); z-index:10;
+}
+nav button {
+  background:none; border:0; color:#777;
+  font-size:11px; display:flex; flex-direction:column;
+  align-items:center; gap:4px; min-width:50px;
+}
+nav button b { font-size:23px; font-weight:400; }
+nav button.active { color:var(--accent); }
+.create {
+  width:47px; height:32px; border:0; border-radius:10px;
+  background:var(--accent); color:white; font-size:25px;
+  font-weight:bold; line-height:1;
+}
+.section { padding:20px 16px; }
+h2 { font-size:22px; margin:5px 0 15px; }
+.field { margin:14px 0; }
+.field label { display:block; font-size:13px; font-weight:bold; margin-bottom:7px; }
+.field input,.field textarea {
+  width:100%; border:1px solid #ddd; border-radius:10px;
+  padding:12px; background:#fff; color:#222;
+}
+.field textarea { min-height:90px; resize:vertical; }
+.primary {
+  width:100%; border:0; border-radius:10px;
+  padding:13px; background:var(--accent); color:#fff;
+  font-weight:bold; margin-top:8px;
+}
+.secondary {
+  border:1px solid #ddd; border-radius:9px;
+  background:white; padding:10px 12px;
+}
+.notice {
+  background:var(--soft); border-radius:10px;
+  padding:12px; font-size:13px; line-height:1.5;
+  color:#752137;
+}
+.profile-top { text-align:center; padding:28px 12px; }
+.avatar {
+  width:76px; height:76px; border-radius:50%;
+  margin:0 auto 12px; background:var(--soft);
+  color:var(--accent); display:grid; place-items:center;
+  font-size:30px; font-weight:bold;
+}
+.stats { display:flex; justify-content:center; gap:28px; margin:18px 0; }
+.stats strong { display:block; font-size:19px; }
+.stats span { font-size:12px; color:var(--muted); }
+.video-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:3px; }
+.video-grid video { width:100%; height:140px; object-fit:cover; background:#ddd; }
+.search-row { display:flex; gap:8px; }
+.search-row input { flex:1; min-width:0; }
+.comment-list { margin:12px 0; font-size:14px; line-height:1.5; }
+.comment { border-bottom:1px solid var(--line); padding:9px 0; }
+small,.muted { color:var(--muted); }
+footer { padding:20px; font-size:11px; text-align:center; color:#888; }
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="logo">ELAWS <span>SHORTS</span></div>
+  <button class="icon-btn" aria-label="Rechercher" onclick="showPage('search')">⌕</button>
+</header>
+
+<main>
+<section id="home" class="page active">
+  <div class="tabs">
+    <button class="selected" onclick="setFeed('forYou',this)">Pour toi</button>
+    <button onclick="setFeed('following',this)">Abonnements</button>
+  </div>
+  <div id="feed" class="feed"></div>
+</section>
+
+<section id="search" class="page">
+  <div class="section">
+    <h2>Découvrir</h2>
+    <div class="search-row">
+      <input id="searchInput" class="field input" placeholder="Rechercher une vidéo ou un créateur" aria-label="Recherche">
+      <button class="secondary" onclick="searchVideos()">Rechercher</button>
+    </div>
+    <div id="searchResults"></div>
+  </div>
+</section>
+
+<section id="create" class="page">
+  <div class="section">
+    <h2>Créer une vidéo</h2>
+    <div class="notice">Version de démonstration : la vidéo choisie sera affichée sur cet appareil. Elle ne sera pas encore envoyée à une plateforme publique.</div>
+    <form id="uploadForm">
+      <div class="field">
+        <label for="videoFile">Choisir une vidéo</label>
+        <input id="videoFile" type="file" accept="video/*" required>
+      </div>
+      <div class="field">
+        <label for="caption">Description</label>
+        <textarea id="caption" maxlength="300" placeholder="Présente ta vidéo..."></textarea>
+      </div>
+      <div class="field">
+        <label for="creator">Nom du créateur</label>
+        <input id="creator" maxlength="40" placeholder="Ton nom ou pseudo" value="Mon profil">
+      </div>
+      <button class="primary" type="submit">Publier sur cet appareil</button>
+    </form>
+    <p id="uploadStatus" class="muted"></p>
+  </div>
+</section>
+
+<section id="profile" class="page">
+  <div class="profile-top">
+    <div class="avatar" id="avatar">E</div>
+    <h2 id="profileName">Mon profil</h2>
+    <p class="muted">Créateur ELAWS SHORTS</p>
+    <div class="stats">
+      <div><strong id="postCount">0</strong><span>Vidéos</span></div>
+      <div><strong id="likeCount">0</strong><span>J'aime reçus*</span></div>
+      <div><strong>0</strong><span>Abonnés*</span></div>
+    </div>
+    <button class="secondary" onclick="editProfile()">Modifier le nom</button>
+    <p><small>*Données de démonstration locales.</small></p>
+  </div>
+  <div id="profileGrid" class="video-grid"></div>
+  <div class="section">
+    <h3>À propos</h3>
+    <p class="muted">ELAWS SHORTS aide les créateurs à partager leurs vidéos courtes.</p>
+  </div>
+</section>
+
+<section id="comments" class="page">
+  <div class="section">
+    <button class="secondary" onclick="showPage('home')">← Retour aux vidéos</button>
+    <h2>Commentaires</h2>
+    <div id="commentList" class="comment-list"></div>
+    <form id="commentForm">
+      <div class="field">
+        <label for="commentInput">Écrire un commentaire</label>
+        <textarea id="commentInput" maxlength="300" required placeholder="Ton commentaire..."></textarea>
+      </div>
+      <button class="primary">Ajouter le commentaire</button>
+    </form>
+    <p class="muted">Les commentaires sont enregistrés sur cet appareil uniquement.</p>
+  </div>
+</section>
+</main>
+
+<nav aria-label="Navigation principale">
+  <button class="active" data-page="home" onclick="showPage('home')"><b>⌂</b>Accueil</button>
+  <button data-page="search" onclick="showPage('search')"><b>⌕</b>Découvrir</button>
+  <button data-page="create" onclick="showPage('create')"><span class="create">+</span>Créer</button>
+  <button data-page="profile" onclick="showPage('profile')"><b>♙</b>Profil</button>
+</nav>
+</div>
+
+<script>
+"use strict";
+
+const $ = id => document.getElementById(id);
+let currentFeed = "forYou";
+let activeCommentId = null;
+let localVideos = [];
+let likedIds = new Set();
+let followedNames = new Set();
+let comments = {};
+let profileName = "Mon profil";
+let nextId = 1;
+
+const demoVideos = [
+  {
+    id:"demo1",
+    creator:"Découverte",
+    caption:"Bienvenue sur ELAWS SHORTS ! Découvre les vidéos courtes.",
+    src:"https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4",
+    likes:12,
+    following:false
+  },
+  {
+    id:"demo2",
+    creator:"Nature",
+    caption:"Une petite pause nature 🌿 Que penses-tu de cette vidéo ?",
+    src:"https://www.w3schools.com/html/mov_bbb.mp4",
+    likes:8,
+    following:false
+  }
+];
+
+function allVideos() {
+  return [...localVideos, ...demoVideos];
+}
+function esc(value) {
+  return String(value).replace(/[&<>"']/g, c => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;",
+    '"':"&quot;", "'":"&#39;"
+  })[c]);
+}
+function showPage(id) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+  const page = $(id);
+  if (page) page.classList.add("active");
+  document.querySelectorAll("nav button").forEach(b => {
+    b.classList.toggle("active", b.dataset.page === id);
+  });
+  if (id === "home") renderFeed();
+  if (id === "profile") renderProfile();
+  if (id === "search") $("searchInput").focus();
+  window.scrollTo(0,0);
+}
+function setFeed(mode,button) {
+  currentFeed = mode;
+  document.querySelectorAll(".tabs button").forEach(b => b.classList.remove("selected"));
+  button.classList.add("selected");
+  renderFeed();
+}
+function renderFeed() {
+  const feed = $("feed");
+  let videos = allVideos();
+  if (currentFeed === "following") {
+    videos = videos.filter(v => followedNames.has(v.creator));
+  }
+  if (!videos.length) {
+    feed.innerHTML = '<div class="empty">Aucune vidéo ici pour le moment.<br>Abonne-toi à un créateur ou découvre les vidéos.</div>';
+    return;
+  }
+  feed.innerHTML = videos.map(v => {
+    const liked = likedIds.has(v.id);
+    const count = v.likes + (liked ? 1 : 0);
+    return `
+    <article class="video-card">
+      <video src="${esc(v.src)}" controls playsinline preload="metadata"
+        aria-label="Vidéo de ${esc(v.creator)}"></video>
+      <div class="video-overlay"></div>
+      <div class="video-info">
+        <strong>@${esc(v.creator)}</strong>
+        <p>${esc(v.caption)}</p>
+        ${v.id.startsWith("demo") ? "" : "<small>Vidéo locale</small>"}
+      </div>
+      <div class="video-actions">
+        <button class="action ${liked?"liked":""}" onclick="toggleLike('${esc(v.id)}')" aria-label="J'aime">${liked?"♥":"♡"}</button>
+        <span class="action-count">${count} J'aime</span>
+        <button class="action" onclick="openComments('${esc(v.id)}')" aria-label="Commentaires">☏</button>
+        <span class="action-count">${(comments[v.id]||[]).length} Com.</span>
+        <button class="action" onclick="shareVideo('${esc(v.id)}')" aria-label="Partager">↗</button>
+        <span class="action-count">Partager</span>
+        ${v.creator === profileName ? "" : `<button class="follow-btn" onclick="toggleFollow('${esc(v.creator)}')">${followedNames.has(v.creator)?"Suivi":"Suivre +"}</button>`}
+      </div>
+    </article>`;
+  }).join("");
+}
+function findVideo(id) {
+  return allVideos().find(v => v.id === id);
+}
+function toggleLike(id) {
+  if (likedIds.has(id)) likedIds.delete(id);
+  else likedIds.add(id);
+  renderFeed();
+  renderProfile();
+}
+function toggleFollow(name) {
+  if (followedNames.has(name)) followedNames.delete(name);
+  else followedNames.add(name);
+  renderFeed();
+}
+async function shareVideo(id) {
+  const v = findVideo(id);
+  if (!v) return;
+  const data = {
+    title:"ELAWS SHORTS",
+    text:"Regarde cette vidéo de @" + v.creator + " sur ELAWS SHORTS.",
+    url:location.href
+  };
+  try {
+    if (navigator.share) await navigator.share(data);
+    else if (navigator.clipboard) {
+      await navigator.clipboard.writeText(data.text + " " + data.url);
+      alert("Texte de partage copié.");
+    } else alert(data.text);
+  } catch(e) {
+    if (e.name !== "AbortError") alert("Le partage n'est pas disponible ici.");
+  }
+}
+function openComments(id) {
+  activeCommentId = id;
+  $("commentInput").value = "";
+  renderComments();
+  showPage("comments");
+}
+function renderComments() {
+  const list = comments[activeCommentId] || [];
+  $("commentList").innerHTML = list.length
+    ? list.map(c => `<div class="comment"><strong>${esc(c.author)}</strong><br>${esc(c.text)}</div>`).join("")
+    : '<p class="muted">Pas encore de commentaire. Sois le premier !</p>';
+}
+$("commentForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const text = $("commentInput").value.trim();
+  if (!text || !activeCommentId) return;
+  comments[activeCommentId] = comments[activeCommentId] || [];
+  comments[activeCommentId].push({author:profileName,text});
+  $("commentInput").value = "";
+  renderComments();
+});
+$("uploadForm").addEventListener("submit", e => {
+  e.preventDefault();
+  const file = $("videoFile").files[0];
+  if (!file) return;
+  if (!file.type.startsWith("video/")) {
+    $("uploadStatus").textContent = "Choisis un fichier vidéo valide.";
+    return;
+  }
+  if (file.size > 50 * 1024 * 1024) {
+    $("uploadStatus").textContent = "Pour ce test, choisis une vidéo de moins de 50 Mo.";
+    return;
+  }
+  const src = URL.createObjectURL(file);
+  const creator = $("creator").value.trim() || profileName;
+  profileName = creator;
+  localVideos.unshift({
+    id:"local"+nextId++, creator,
+    caption:$("caption").value.trim(),
+    src, likes:0, following:false
+  });
+  $("uploadStatus").textContent = "Vidéo ajoutée sur cet appareil. Elle n'est pas en ligne pour les autres utilisateurs.";
+  $("videoFile").value = "";
+  $("caption").value = "";
+  renderFeed();
+  renderProfile();
+  showPage("home");
+});
+function searchVideos() {
+  const q = $("searchInput").value.trim().toLowerCase();
+  const results = allVideos().filter(v =>
+    (v.creator+" "+v.caption).toLowerCase().includes(q)
+  );
+  $("searchResults").innerHTML = results.length
+    ? results.map(v => `<div class="comment"><strong>@${esc(v.creator)}</strong><p>${esc(v.caption)}</p><button class="secondary" onclick="showPage('home')">Voir le fil</button></div>`).join("")
+    : '<p class="empty">Aucun résultat. Essaie un autre mot.</p>';
+}
+$("searchInput").addEventListener("keydown",e=>{
+  if(e.key==="Enter") searchVideos();
+});
+function editProfile() {
+  const name = prompt("Quel nom veux-tu utiliser ?", profileName);
+  if (name && name.trim()) {
+    profileName = name.trim().slice(0,40);
+    $("creator").value = profileName;
+    renderProfile();
+  }
+}
+function renderProfile() {
+  $("profileName").textContent = profileName;
+  $("avatar").textContent = profileName.charAt(0).toUpperCase();
+  $("postCount").textContent = localVideos.filter(v=>v.creator===profileName).length;
+  $("likeCount").textContent = localVideos.filter(v=>v.creator===profileName).reduce((sum,v)=>sum+v.likes+(likedIds.has(v.id)?1:0),0);
+  $("profileGrid").innerHTML = localVideos.filter(v=>v.creator===profileName).map(v=>
+    `<video src="${esc(v.src)}" controls playsinline preload="metadata"></video>`
+  ).join("");
+}
+renderFeed();
+renderProfile();
+</script>
+</body>
+</html>
