@@ -746,5 +746,73 @@ function initializeApp(){
 
 initializeApp();
 </script>
+  <!-- IKORI IKURA - SOCIAL UNIVERSE -->
+<section id="ikori-community" style="
+  margin:20px 12px;
+  padding:20px;
+  border-radius:20px;
+  background:linear-gradient(145deg,#101915,#172c22);
+  color:#fff;
+  font-family:Arial,sans-serif;
+  border:1px solid #b99a50;
+">
+  <h2 style="color:#d8bd72;text-align:center;">
+    ✨ IKORI IKURA
+  </h2>
+
+  <p style="text-align:center;color:#c8d8ce;">
+    Social Universe — Connecte le monde
+  </p>
+
+  <div style="
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:12px;
+    margin-top:20px;
+  ">
+    <button onclick="ikoriOpen('friend')" style="padding:15px;border:0;border-radius:14px;background:#087443;color:white;">
+      🌍 Amitiés internationales
+    </button>
+
+    <button onclick="ikoriOpen('dating')" style="padding:15px;border:0;border-radius:14px;background:#b99a50;color:#111;">
+      ❤️ Rencontres adultes
+    </button>
+
+    <button onclick="ikoriOpen('rooms')" style="padding:15px;border:0;border-radius:14px;background:#087443;color:white;">
+      🎙️ Salons vocaux
+    </button>
+
+    <button onclick="ikoriOpen('language')" style="padding:15px;border:0;border-radius:14px;background:#b99a50;color:#111;">
+      🗣️ Échanges linguistiques
+    </button>
+  </div>
+
+  <div id="ikori-community-content" style="
+    margin-top:18px;
+    padding:15px;
+    border-radius:14px;
+    background:#20372b;
+    color:#fff;
+  ">
+    Bienvenue dans ton nouvel espace communautaire !
+    Choisis une rubrique pour commencer.
+  </div>
+</section>
+
+<script>
+function ikoriOpen(section) {
+  const content = document.getElementById("ikori-community-content");
+
+  const pages = {
+    friend: "<h3>🌍 Amitiés internationales</h3><p>Découvre des personnes de différents pays et crée de nouvelles amitiés.</p>",
+    dating: "<h3>❤️ Rencontres adultes</h3><p>Espace réservé aux personnes de 18 ans et plus. Respect, consentement et sécurité avant tout.</p>",
+    rooms: "<h3>🎙️ Salons vocaux</h3><p>Un espace pour discuter et rencontrer des personnes par la voix.</p>",
+    language: "<h3>🗣️ Échanges linguistiques</h3><p>Pratique le français, l'anglais et d'autres langues avec la communauté.</p>"
+  };
+
+  content.innerHTML = pages[section] || "Bienvenue sur IKORI IKURA.";
+}
+</script>
+<!-- FIN IKORI IKURA SOCIAL UNIVERSE -->
 </body>
 </html>
